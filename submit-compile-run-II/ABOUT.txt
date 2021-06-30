@@ -1,0 +1,30 @@
+compile and run examples with slurm
+updated Feb 2021
+
+Uses gcc, intel, mpi.
+
+To run:
+=======
+    $ sbatch slurmINTEL-mpi
+    
+example:
+    sperhac@srv-p22-12$ sbatch slurmINTEL-mpi 
+    Submitted batch job 5020356
+
+To monitor:
+===========
+    $ squeue -u <username>
+    
+
+example:
+
+    jsperhac@srv-p22-12$ squeue -u jsperhac
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           5020356     debug slurmINT jsperhac  R       0:13      2 cpn-k08-34-[01-02]
+
+--    
+
+Output:
+    slurm-JOBNUMBER.out
+
+

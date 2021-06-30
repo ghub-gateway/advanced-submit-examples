@@ -1,0 +1,32 @@
+#!/bin/sh
+## IF you change nodes and ntasks per node here, do the same
+## in the submit call. These params must match -n and -N.
+#SBATCH --partition=debug
+#SBATCH --qos=debug
+#SBATCH --time=00:15:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=12
+
+echo "SLURM_JOBID="$SLURM_JOBID
+echo "SLURM_JOB_NODELIST"=$SLURM_JOB_NODELIST
+echo "SLURM_NNODES"=$SLURM_NNODES
+echo "SLURMTMPDIR="$SLURMTMPDIR
+
+cd $SLURM_SUBMIT_DIR
+echo "running on 12 cores, 12 each on 1 nodes"
+echo "working directory = "$SLURM_SUBMIT_DIR
+
+# let's load default versions of intel and intel mpi compilers
+module load intel
+module load intel-mpi
+module list
+
+# compile
+mpicc -o helloworld-mpi helloworld-mpi.c
+
+echo "Launch hello with srun"
+export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+srun ./helloworld-mpi
+
+# fin
+echo "All Done!"

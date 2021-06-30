@@ -1,0 +1,13 @@
+// arguments to submit:
+
+// -v u2-grid-debug-ib => use the debug partition, infiniband
+//			(these are 12-core nodes)
+// -M report Metrics on this run
+// -w walltime requested, in hh:mm:ss
+// -n 24 => 24 cores in total
+// -N 12 => 12 cores per node
+// -i ... => ssh a single input file to the cluster head node for compilation
+//	NOTE: if you have multiple input files, list them AFTER the executable:
+
+submit -v u2-grid-debug -M -w 00:15:00 -n 24 -N 12 ./slurmINTEL-mpi helloworld.c helloworld.f helloworld-mpi.c
+

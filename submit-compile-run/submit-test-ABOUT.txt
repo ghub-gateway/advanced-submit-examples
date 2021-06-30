@@ -1,0 +1,28 @@
+Compile and run a submit job on the CCR cluster
+==============================================
+
+Included files:
+    helloworld-mpi.c
+    submit-call.txt
+    SLURMHello-srun
+
+These example files enable qualified users to execute a "Hello World" test job on the compute cluster. In order to use submit functionality, you must have access to the Workspace, Jupyter Terminal, or Jupyter noVNC Desktop tool, and be a member of the Submit group. All submit commands are run from the command line.
+
+This example uses the wrapper compiler mpicc to compile simple C code with MPI on the cluster, then run it there. More about Intel MPI compilers and mpicc:
+    https://ubccr.freshdesk.com/support/solutions/articles/5000690590
+    https://software.intel.com/en-us/intel-mpi-library
+
+To use this example:
+
+1. Upload the three attached files to a directory in your Workspace. (SLURMHello-srun, helloworld-mpi.c, submit-call.txt)
+
+2. Ensure the executable bit is set on the SLURM script, SLURMHello-srun.
+
+3. Run the command found in submit-call.txt on the Workspace command line:
+  submit -v u2-grid-debug-ib -M -n 12 -N 12 -i helloworld-mpi.c ./SLURMHello-srun
+
+The submit software will upload the SLURM script and the C source code to the cluster, and call the SLURM script.
+
+The SLURM script will load the needed modules, compile the C code (mpicc defaults to using gcc) with MPI, and execute it on a 12-core node. Each CPU will output some information.
+
+When the run is complete, stderr and stout files, as well as the object file from the compilation, will be populated in your Workspace directory.

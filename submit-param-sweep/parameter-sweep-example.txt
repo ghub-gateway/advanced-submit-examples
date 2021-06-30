@@ -1,0 +1,142 @@
+EXAMPLE submit parameter sweep
+------------------------------
+
+  You can set up a parameter sweep that will submit a series of jobs with
+  different parameters to the compute resources. The series of parameters
+  can be specified in several different ways.
+
+  Parameter sweeps can be run locally (on the HUBzero instance) or on the
+  cluster resources. As with any submit call, they must be issued from
+  the HUBzero Workspace tool. Users must be granted access to both the Workspace
+  tool, and to the submit command.
+
+  Inputs:
+    All of the parameters accepted by your script or program can be varied in 
+  a parameter sweep. Each unique combination of parameters is submitted as a 
+  separate compute job.
+  
+  Outputs:
+  	The output of the parameter sweep jobs will be collected into a subdirectory 
+  of the submit directory, and named after the submit job number.
+  	
+  This directory will contain subdirectories 01..0n where n is the number of 
+  unique combinations of parameters.		                    
+
+Example contents
+----------------
+
+The following example demonstrates how to call parameter sweeps via submit.
+
+zip file contents:
+    example-call.txt    brief howto for submit call
+	input.csv  	        parameter file in csv form
+	params   	        parameter file
+	sim1.py		        python executable script
+	
+
+sim1.py script:
+
+    This python script accepts a variety of parameters that describe a
+    simple circuit. It defines default values if no inputs are supplied,
+    computes the voltage across a capacitor at different times in seconds,
+    and outputs the results to a log file named out.log by default.
+
+	./sim1.py --help
+	
+	Usage: sim1.py [options]
+
+	Options:
+	  -h, --help            show this help message and exit
+	  --Vin                 Input voltage to the system with units of volts (V)
+                            Default 10.0 V
+	  --R                   Impedance of the resistor with units of ohms
+                            Default 100e3 ohms
+	  --C                   Capacitance of the capacitor with units of farads (F)
+                            Default 100e-6 Farads
+	  --lowerbound          Lower bound of the time frame to examine with units of
+		                    seconds (s), default 0s.
+	  --upperbound          Upper bound of the time frame to examine with units of
+		                    seconds (s), default 60s.
+	  --log                 Name of the file used to store results
+                            Default out.log
+	  --inputdeck           Read input values from an ini style configuration
+		                    
+
+SUBMIT PARAMETER SWEEP VARIANTS
+--------------------------------
+
+parameter file
+--------------
+
+Parameter definitions for the parameter sweep are taken from the specified file.
+
+In this example, parameters used in the sweep are taken from the file named 'params'. 
+These values are substituted into variables Vin and C in sim1.py.
+
+The script sim1.py and the params file are assumed to be in the current directory.
+
+example call:
+	submit -l -p params ./sim1.py --Vin @@Vin --C @@C
+
+    -l indicates a local call
+    -p indicates the parameter file specifying parameter values
+    --Vin is an argument to sim1.py. Its value will be given by @@Vin
+            from the parameter file.
+    --C is an argument to sim1.py. Its value will be given by @@C
+            from the parameter file.
+
+parameter file contents and format:
+	# Vin has 5 values: starts at 1 and increments by 2 until it reaches 10 (1, 3, 5, 7, 9)
+	# C has two values: 100e-6,100e-5
+	parameter @@Vin=1:2:10
+	parameter @@C=100e-6,100e-5
+
+csv file
+--------------
+
+Parameter definitions for the parameter sweep are taken from the specified csv file.
+The csv file sets out all possible combinations to be run--one job will be submitted
+for each line in the csv file. Note that there are no spaces in the csv file.
+
+These values are to be substituted into Vin and C in sim1.py.
+
+The script sim1.py and the csv file are assumed to be in the current directory.
+
+example call:
+	submit -l -d input.csv ./sim1.py --Vin @@Vin --C @@C
+
+    -l indicates a local call
+    -d indicates the csv file specifying parameter values
+    --Vin is an argument to sim1.py. Its value will be given by @@Vin
+            from the csv file.
+    --C is an argument to sim1.py. Its value will be given by @@C
+            from the csv file.
+
+csv file contents and format:
+	# Vin has 5 values: starts at 1 and increments by 2 until it reaches 10 (1, 3, 5, 7, 9)
+	# C has two values: 100e-6,100e-5
+	@@Vin,@@C
+	1,100e-6
+	3,100e-6
+	5,100e-6
+	7,100e-6
+	9,100e-6
+	1,100e-5
+	3,100e-5
+	5,100e-5
+	7,100e-5
+	9,100e-5
+	
+parameter sweeps on the cluster
+-------------------------------
+
+To run parameter sweeps on the cluster, simply replace the -l (--local) switch with the
+venue specification for the cluster resource. For example:
+
+	submit -v u2-grid-debug -d input.csv ./sim1.py --Vin @@Vin --C @@C
+
+template file
+-------------
+
+Don't use a template file; this may not result in the desired behavior. If the parameter
+substitutions are not read properly, the default parameter values (if any) are used instead.

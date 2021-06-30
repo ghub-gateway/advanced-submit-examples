@@ -1,0 +1,32 @@
+compile and run examples with slurm
+Updated Feb 2021
+
+Uses gcc, intel, mpi.
+
+To run:
+=======
+    $ sbatch slurmINTEL-mpi
+    
+example:
+    
+    jsperhac@srv-p22-12:~/submit-tests/from-vidia/submit-compile-run$ sbatch SLURMHello-srun 
+    Submitted batch job 5020281
+
+
+To monitor:
+===========
+    $ squeue -u <username>
+    
+
+example:
+    jsperhac@srv-p22-12$ squeue -u jsperhac
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           5020281     debug SLURMHel jsperhac  R       0:03      1 cpn-k08-34-01
+
+
+--    
+
+Output:
+    slurm-JOBNUMBER.out
+
+

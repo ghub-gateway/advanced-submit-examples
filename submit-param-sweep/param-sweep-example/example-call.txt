@@ -1,0 +1,47 @@
+Submit parameter sweep example 
+
+EXAMPLE FILES
+==============
+
+sim1.py
+-------
+
+    Script generates file out.log containing times (s) and voltages
+
+    for help:
+        ./sim1.py -h
+
+    example call:
+        ./sim1.py --Vin=1.2 --R=0.5 --C=0.02 --lowerbound=0.5 --upperbound=4 --log=out.log
+
+
+params
+-----
+    Specifies values of Vin and C parameters for parameter sweep.
+    One job will be submitted per combination of parameter values. 
+
+input.csv
+---------
+    Alternate means to specify values of Vin and C parameters for parameter sweep.
+    One job will be submitted per line. 
+
+
+PARAMETER SWEEP
+==============
+
+example submit call: parameter sweep
+------------------------------------
+
+local:
+
+  submit -l -p params ./sim1.py --Vin @@Vin --C @@C
+  submit -l -d input.csv ./sim1.py --Vin @@Vin --C @@C
+
+cluster:
+
+  submit -v u2-grid-debug -p params ./sim1.py --Vin @@Vin --C @@C
+  submit -v u2-grid-debug -d input.csv ./sim1.py --Vin @@Vin --C @@C
+
+    Output: subdirectory with hubzero submit job number
+    This subdirectory contains subdirectories with outputs from the 
+    multiple calculations specified by the parameter combinations.

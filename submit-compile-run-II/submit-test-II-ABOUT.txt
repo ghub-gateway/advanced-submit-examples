@@ -1,0 +1,32 @@
+Compile and run submit jobs on the CCR cluster II
+=================================================
+
+Included files:
+    helloworld.c
+    helloworld-mpi.c
+    helloworld.f
+    submit-call.txt
+    slurmINTEL-mpi
+
+These example files enable qualified users to execute "Hello World" test jobs using C, C with MPI, and Fortran. These jobs are compiled and executed on the CCR compute cluster. In order to use submit functionality, you must have access to VIDIA's Workspace tool, and be a member of the Submit group. All submit commands are run from the Workspace.
+
+This example uses the Intel compiler mpiicc to compile simple C, C with MPI, and Fortran code on the cluster, then run it there.
+
+To use this example:
+
+1. Upload the attached files to a directory in your Workspace. (slurmINTEL-mpi, helloworld.c, helloworld.f, helloworld-mpi.c, submit-call.txt)
+
+2. Ensure the executable bit is set on the SLURM script, SLURMHello-srun.
+
+3. Run the command found in submit-call.txt on the Workspace command line:
+  submit -v u2-grid-debug-ib -M -w 00:15:00 -n 24 -N 12 ./slurmINTEL-mpi helloworld.c helloworld.f helloworld-mpi.c
+
+NOTE that the input source files are listed after the SLURM script on the submit command line.
+
+The submit software will upload the SLURM script and the C source code to the cluster, and call the SLURM script.
+
+The SLURM script will load the needed modules, compile the sources, and execute them. In the case of the MPI codes, each CPU will output some information when the job runs.
+
+When the run is complete, stderr and stout files, as well as the binary object files from the compilations, will be populated in your Workspace directory.
+
+

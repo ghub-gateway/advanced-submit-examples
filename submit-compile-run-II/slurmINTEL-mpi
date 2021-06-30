@@ -1,0 +1,72 @@
+#!/bin/sh
+#SBATCH --partition=debug
+#SBATCH --qos=debug
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=12
+#SBATCH --constraint=IB
+
+echo "SLURM_JOBID="$SLURM_JOBID
+echo "SLURM_JOB_NODELIST"=$SLURM_JOB_NODELIST
+echo "SLURM_NNODES"=$SLURM_NNODES
+echo "SLURMTMPDIR="$SLURMTMPDIR
+
+echo "SLURM_SUBMIT_DIR="$SLURM_SUBMIT_DIR
+
+ulimit -s unlimited
+module load intel-mpi
+module list
+export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
+echo "***********************************************************************"
+echo "test GNU compilers"
+
+which gcc
+gcc -v
+which mpicc
+#
+mpicc -o helloworld-gcc helloworld.c
+ldd helloworld-gcc
+echo "Launch helloworld test gcc"
+srun ./helloworld-gcc
+
+echo "***********************************************************************"
+which gfortran
+gfortran -v
+which mpif90
+#
+mpif90 -o helloworld-gfortran helloworld.f
+ldd helloworld-gfortran
+echo "Launch helloworld test mpi gfortran"
+srun ./helloworld-gfortran
+
+echo "***********************************************************************"
+
+echo "***********************************************************************"
+echo "test Intel compilers"
+module load intel
+module list
+
+which icc
+icc -V
+which mpiicc
+#
+mpiicc -o helloworld-icc helloworld.c
+ldd helloworld-icc
+echo "Launch helloworld test mpi icc"
+srun ./helloworld-icc
+
+echo "***********************************************************************"
+which ifort
+ifort -V
+which mpiifort
+#
+mpiifort -o helloworld-ifort helloworld.f
+ldd helloworld-ifort
+echo "Launch helloworld test ifort"
+srun ./helloworld-ifort
+
+echo "***********************************************************************"
+
+ls -latr
+
+#
+echo "All Done!"
